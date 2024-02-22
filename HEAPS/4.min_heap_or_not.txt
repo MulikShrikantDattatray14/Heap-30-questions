@@ -1,0 +1,64 @@
+The provided code is a JavaScript implementation of a function to check whether a given array represents a min-heap or not. A min-heap is a binary tree data structure where the value of each node is less than or equal to the values of its children.
+
+===============================================================================================================
+Let's break down the code and understand its logic:
+
+The function isHeap takes three parameters:
+
+arr: The input array representing the heap.
+i: The index of the current element being checked.
+n: The total number of elements in the heap.
+
+==============================================================================================================
+The first if condition checks whether the current index i is greater than or equal to (n - 1) / 2. If this condition is true, it means the current node is a leaf node, and the function returns true. This is because leaf nodes, by definition, satisfy the min-heap property.
+
+-------------------------------------------------------------------------------------------------------------
+
+The second if condition checks whether the current node and its children satisfy the min-heap property. It has four sub-conditions:
+
+arr[i] <= arr[2 * i + 1]: Check if the current node is smaller than or equal to its left child.
+(2 * i + 2 >= n || arr[i] <= arr[2 * i + 2]): Check if the current node is smaller than or equal to its right child (if it exists).
+isHeap(arr, 2 * i + 1, n): Recursively check the left subtree.
+isHeap(arr, 2 * i + 2, n): Recursively check the right subtree (if it exists).
+If all these conditions are true, the function returns true, indicating that the current subtree is a min-heap.
+--------------------------------------------------------------------------------------------------------------
+
+If any of the conditions in step 3 is false, the function returns false, indicating that the current subtree is not a min-heap.
+
+The driver program creates an example array arr and calls the isHeap function with the root index (0) and the length of the array. If the function returns true, it prints "Yes," indicating that the array represents a min-heap. Otherwise, it prints "No."
+
+In your example array arr = [90, 15, 10, 7, 12, 2, 7, 3], the code will print "Yes" because the array represents a min-heap.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function isHeap(arr, i, n) {
+    // If (2 * i) + 1 >= n, then leaf node, so return true
+    if (i >= (n - 1) / 2) {
+      return true;
+    }
+  
+    // If an internal node and
+    // is smaller than its
+    // children, and same is
+    // recursively true for the
+    // children
+    if (
+      arr[i] <= arr[2 * i + 1] &&
+      ((2 * i + 2 >= n) || (arr[i] <= arr[2 * i + 2])) &&
+      isHeap(arr, 2 * i + 1, n) &&
+      isHeap(arr, 2 * i + 2, n)
+    ) {
+      return true;
+    }
+  
+    return false;
+  }
+  
+  // Driver program
+  let arr = [90, 15, 10, 7, 12, 2, 7, 3];
+  let n = arr.length - 1;
+  if (isHeap(arr, 0, n)) {
+    console.log("Yes<br>");
+  } else {
+    console.log("No<br>");
+  }
+  

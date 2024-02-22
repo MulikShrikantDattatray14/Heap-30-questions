@@ -1,0 +1,58 @@
+A Binary Heap is a Binary Tree with the following properties:  
+
+It is a Complete Tree. This property of Binary Heap makes them suitable to be stored in an array.
+A Binary Heap is either Min Heap or Max Heap.
+
+In a Min Binary Heap, the key at the root must be minimum among all keys present in Binary Heap. The same property must be recursively true for all nodes in Binary Tree.
+
+Similarly, in a Max Binary Heap, the key at the root must be maximum among all keys present in Binary Heap. The same property must be recursively true for all nodes in Binary Tree.
+
+Operation on Binary Heap :
+
+1.insert(p): Inserts a new element with priority p.
+2.extractMax(): Extracts an element with maximum priority.
+3.remove(i): Removes an element pointed by an iterator i.
+4.getMax(): Returns an element with maximum priority.
+5.changePriority(i, p): Changes the priority of an element pointed by i to p.
+
+-its has height of logN
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Difference between Min Heap and Max Heap : 
+
+A Heap is a special Tree-based data structure in which the tree is a complete binary tree. Since a heap is a complete binary tree, a heap with N nodes has log N height. It is useful to remove the highest or lowest priority element. It is typically represented as an array. There are two types of Heaps in the data structure.
+
+Min-Heap :
+In a Min-Heap the key present at the root node must be less than or equal among the keys present at all of its children. The same property must be recursively true for all sub-trees in that Binary Tree. In a Min-Heap the minimum key element present at the root. Below is the Binary Tree that satisfies all the property of Min Heap.
+
+
+Max Heap :
+In a Max-Heap the key present at the root node must be greater than or equal among the keys present at all of its children. The same property must be recursively true for all sub-trees in that Binary Tree. In a Max-Heap the maximum key element present at the root. Below is the Binary Tree that satisfies all the property of Max Heap.
+
+
+
+Difference between Min Heap and Max Heap: 
+
+1.	In a Min-Heap the key present at the root node must be less than or equal to among the keys present at all of its children.	In a Max-Heap the key present at the root node must be greater than or equal to among the keys present at all of its children.
+
+2.	In a Min-Heap the minimum key element present at the root.	In a Max-Heap the maximum key element present at the root.
+
+3.	A Min-Heap uses the ascending priority.	A Max-Heap uses the descending priority.
+
+4.	In the construction of a Min-Heap, the smallest element has priority.	In the construction of a Max-Heap, the largest element has priority.
+
+5.	In a Min-Heap, the smallest element is the first to be popped from the heap.	In a Max-Heap, the largest element is the first to be popped from the heap.
+
+Applications of Heaps:
+
+1.Heap Sort: Heap Sort is one of the best sorting algorithms that use Binary Heap to sort an array in O(N*log N) time.
+2.Priority Queue: A priority queue can be implemented by using a heap because it supports insert(), delete(), extractMax(), decreaseKey() operations in O(log N) time.
+3.Graph Algorithms: The heaps are especially used in Graph Algorithms like Dijkstra’s 4.Shortest Path and Prim’s Minimum Spanning Tree.
+
+
+Performance Analysis of Min-Heap and Max-Heap:
+
+Get Maximum or Minimum Element: O(1)
+Insert Element into Max-Heap or Min-Heap: O(log N)
+Remove Maximum or Minimum Element: O(log N)

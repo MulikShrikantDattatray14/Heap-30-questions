@@ -1,0 +1,37 @@
+//The min heap property ensures that the value of each node is less than or equal to the values of its children.
+function minHeapify(arr, n, i) {
+  let smallest = i; // Initialize smallest as root
+  const leftChild = 2 * i + 1; // Left child index
+  const rightChild = 2 * i + 2; // Right child index
+
+  // If left child is smaller than root
+  if (leftChild < n && arr[leftChild] < arr[smallest]) {
+    smallest = leftChild;
+  }
+
+  // If right child is smaller than current smallest
+  if (rightChild < n && arr[rightChild] < arr[smallest]) {
+    smallest = rightChild;
+  }
+
+  // If smallest is not the root
+  if (smallest !== i) {
+    // Swap the root with the smallest element
+    [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
+
+    // Recursively heapify the affected subtree
+    minHeapify(arr, n, smallest);
+  }
+}
+
+// Example usage
+const array = [8, 12, 4, 6, 2, 10];
+const arraySize = array.length;
+
+// Build a min heap
+for (let i = Math.floor(arraySize / 2) - 1; i >= 0; i--) {
+  minHeapify(array, arraySize, i);
+  // note: here we are using heap function and not insert function. bcz insert function works in logn and if we do it for all the nodes - time complexity will be in NlogN. so using heap function for all the elements we need time complexity of 0(N). in heap function we are already started making heap from bottom , so there also occurs a optimisation .
+}
+
+console.log("Min Heap:", array);

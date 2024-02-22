@@ -1,0 +1,168 @@
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+Example 2:
+
+Input: nums = [1], k = 1
+Output: [1]
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Approach -1 : using HEAP: 
+
+
+class MaxHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMax() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const max = this.heap[0];
+        const lastElement = this.heap.pop();
+
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return max;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (
+                this.heap[currentIndex].frequency > this.heap[parentIndex].frequency
+            ) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let largestChildIndex = currentIndex;
+
+            if (
+                leftChildIndex < this.heap.length &&
+                this.heap[leftChildIndex].frequency >
+                this.heap[largestChildIndex].frequency
+            ) {
+                largestChildIndex = leftChildIndex;
+            }
+
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex].frequency >
+                this.heap[largestChildIndex].frequency
+            ) {
+                largestChildIndex = rightChildIndex;
+            }
+
+            if (largestChildIndex !== currentIndex) {
+                this.swap(currentIndex, largestChildIndex);
+                currentIndex = largestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+
+function topKFrequent(nums, k) {
+    const frequencyMap = new Map();
+    for (const num of nums) {
+        frequencyMap.set(num, (frequencyMap.get(num) || 0) + 1);
+    }
+
+    const maxHeap = new MaxHeap();
+
+
+    for (const [num, frequency] of frequencyMap) {
+        maxHeap.insert({ num, frequency });
+    }
+    console.log(maxHeap)
+    const result = [];
+    for (let i = 0; i < k; i++) {
+        const element = maxHeap.extractMax();
+        if (element !== null) {
+            result.push(element.num);
+        }
+    }
+
+    return result;
+}
+
+// Example 1:-
+const nums1 = [1, 1, 1, 2, 2, 3];
+const k1 = 2;
+console.log(topKFrequent(nums1, k1)); // Output: [1, 2]
+
+// Example 2:
+const nums2 = [1];
+const k2 = 1;
+console.log(topKFrequent(nums2, k2)); // Output: [1]
+
+//The overall time complexity is O(n + m * log(k) + k * log(k)).
+// the space complexity is O(n + k).
+
+//////////////////////////////////////////////////////////////////////////////////
+// approach - using hashmap and sorting :
+
+
+let nums = [1];
+let k = 1;
+let map = new Map();
+
+for (let i = 0; i < nums.length; i++) {
+    if (map.has(nums[i])) {
+        map.set(nums[i], map.get(nums[i]) + 1)
+    } else {
+        map.set(nums[i], 1)
+    }
+}
+let arr = Array.from(map)
+arr = (arr.sort((a, b) => b[1] - a[1]));
+let final = [];
+for (let i = 0; i < k; i++) {
+    let ele = arr[i][0]
+    final.push(ele)
+}
+console.log(final)

@@ -1,0 +1,174 @@
+Problem Description:
+/https://www.interviewbit.com/problems/n-max-pair-combinations/
+ 
+ 
+
+Given two integers arrays A and B of size N each.
+
+Find the maximum N elements from the sum combinations (Ai + Bj) formed from elements in array A and B.
+
+
+
+Problem Constraints
+1 <= N <= 2 * 105
+
+-1000 <= A[i], B[i] <= 1000
+
+
+
+Input Format
+First argument is an integer array A.
+
+Second argument is an integer array B.
+
+
+
+Output Format
+Return an intger array denoting the N maximum element in descending order.
+
+
+
+Example Input
+Input 1:
+
+ A = [1, 4, 2, 3]
+ B = [2, 5, 1, 6]
+Input 2:
+
+ A = [2, 4, 1, 1]
+ B = [-2, -3, 2, 4]
+
+
+Example Output
+Output 1:
+
+ [10, 9, 9, 8]
+Output 2:
+
+ [8, 6, 6, 5]
+
+
+Example Explanation
+Explanation 1:
+
+ 4 maximum elements are 10(6+4), 9(6+3), 9(5+4), 8(6+2).
+Explanation 2:
+
+ 4 maximum elements are 8(4+4), 6(4+2), 6(4+2), 5(4+1).
+
+ ==============================================================================================================================================================================================================================
+
+ class MaxHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        // always at bottom
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMax() {
+        // top root element
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const max = this.heap[0];
+        const lastElement = this.heap.pop();
+        // put last element on the top most position
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return max;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.heap[currentIndex][0] > this.heap[parentIndex][0]) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let largestChildIndex = currentIndex;
+
+            if (leftChildIndex < this.heap.length && this.heap[leftChildIndex][0] > this.heap[largestChildIndex][0]) {
+                largestChildIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < this.heap.length && this.heap[rightChildIndex][0] > this.heap[largestChildIndex][0]) {
+                largestChildIndex = rightChildIndex;
+            }
+
+            if (largestChildIndex !== currentIndex) {
+                this.swap(currentIndex, largestChildIndex);
+                currentIndex = largestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+let A = [1, 4, 2, 3];
+let B = [2, 5, 1, 6];
+let ans = solve(A, B)
+console.log(ans)
+function solve(A, B) {
+    // Sorting both the given arrays
+    A.sort((a, b) => a - b);
+    B.sort((a, b) => a - b);
+
+    let n = A.length;
+
+    // This priority_queue stores a tuple
+    // tuple = (sum of pair, index of A used for the sum, index of B used for the sum)
+    let pq = new MaxHeap();
+
+    // The last indexes of both the arrays will give the max pair sum
+    // Taking the maximum element from array B and pushing all pair sums with array A in the priority queue
+    for (let i = 0; i < n; i++) {
+        pq.insert([A[n - 1 - i] + B[n - 1], n - i - 1, n - 1]);
+    }
+
+    let result = [];
+    while (n-- > 0) {
+        // At any instance, the top of the priority queue will be pushed to the array
+        // ia is the index of the element in array A, and ib is the index of the element in array B
+        let [sum, ia, ib] = pq.extractMax();
+        result.push(sum);
+
+        pq.insert([A[ia] + B[ib - 1], ia, ib - 1]);
+    }
+
+    return result;
+}

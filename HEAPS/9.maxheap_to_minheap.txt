@@ -1,0 +1,47 @@
+// The idea is, simply build min Heap without caring about the input. Start from the bottom-most and rightmost internal node of Min-Heap and heapify all internal nodes in the bottom-up way to build the min heap.
+
+function maxHeapToMinHeap(heap) {
+  // Find the last non-leaf node
+  const lastNonLeafIndex = Math.floor((heap.length - 2) / 2);
+
+  // Perform heapify from the last non-leaf node to the root
+  for (let i = lastNonLeafIndex; i >= 0; i--) {
+    minHeapify(heap, i);
+  }
+}
+
+// Function to heapify a subtree rooted at index i for min heap
+function minHeapify(heap, i) {
+  const leftChildIndex = 2 * i + 1;
+  const rightChildIndex = 2 * i + 2;
+  let smallest = i;
+
+  // Compare with left child
+  if (leftChildIndex < heap.length && heap[leftChildIndex] < heap[smallest]) {
+    smallest = leftChildIndex;
+  }
+
+  // Compare with right child
+  if (rightChildIndex < heap.length && heap[rightChildIndex] < heap[smallest]) {
+    smallest = rightChildIndex;
+  }
+
+  // If the smallest element is not the current node, swap them and recursively heapify
+  if (smallest !== i) {
+    swap(heap, i, smallest);
+    minHeapify(heap, smallest);
+  }
+}
+
+// Function to swap two elements in an array
+function swap(arr, i, j) {
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+// Example usage:
+const maxHeap = [20, 18, 12, 10, 9, 9, 8, 16, 15, 13];
+console.log("Max Heap:", maxHeap);
+maxHeapToMinHeap(maxHeap);
+console.log("Min Heap:", maxHeap);

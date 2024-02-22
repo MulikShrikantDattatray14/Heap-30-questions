@@ -1,0 +1,102 @@
+// complete binary tree is always of Time complexity LogN
+///A Heap is a special Tree-based data structure in which the tree is a complete binary tree.
+//A complete binary tree is a binary tree in which every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes at the last level h. A perfect tree is therefore always complete but a complete tree is not always perfect.
+
+
+// why was there a need for heap to be a complete binary tree?? bcz we want to denote a heap as an array.and if there are n nodes , then its height will be LogN.
+//if node is in ith position, then its parent node is at (i/2)th position
+// left child of a parent(i) is at position - i*2
+// right child of a parent(i) is at position - i*2+1.
+class MaxHeap {
+  constructor() {
+    this.heap = [];
+  }
+
+  insert(element) {// always at bottom
+    this.heap.push(element);// inserted at last position of the array.
+    this.heapifyUp();
+  }
+
+  extractMax() {// top root element
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const max = this.heap[0];// first element of the array.
+    const lastElement = this.heap.pop();
+    // put last element on the top most position i.e at the first position of the array.
+    if (this.heap.length > 0) {
+      this.heap[0] = lastElement;
+      this.heapifyDown();
+    }
+
+    return max;
+  }
+
+  peek() {
+    return this.isEmpty() ? null : this.heap[0];
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  heapifyUp() {
+    let currentIndex = this.heap.length - 1;
+    while (currentIndex > 0) {
+      const parentIndex = Math.floor((currentIndex - 1) / 2);
+      if (this.heap[currentIndex] > this.heap[parentIndex]) {
+        this.swap(currentIndex, parentIndex);
+        currentIndex = parentIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  heapifyDown() {
+    // now you are at the index-0th , and now lets move downwards.
+
+    let currentIndex = 0;
+
+    while (true) {
+      const leftChildIndex = 2 * currentIndex + 1;
+      const rightChildIndex = 2 * currentIndex + 2;
+      let largestChildIndex = currentIndex;
+
+      // find the bigger value amongst left and right child .
+      if (leftChildIndex < this.heap.length && this.heap[leftChildIndex] > this.heap[largestChildIndex]) {
+        largestChildIndex = leftChildIndex;
+      }
+
+      if (rightChildIndex < this.heap.length && this.heap[rightChildIndex] > this.heap[largestChildIndex]) {
+        largestChildIndex = rightChildIndex;
+      }
+      // now swap the bigger value with the current index
+      if (largestChildIndex !== currentIndex) {
+        this.swap(currentIndex, largestChildIndex);
+        currentIndex = largestChildIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  swap(i, j) {
+    const temp = this.heap[i];
+    this.heap[i] = this.heap[j];
+    this.heap[j] = temp;
+  }
+}
+
+// Example usage:
+const maxHeap = new MaxHeap();
+maxHeap.insert(20);
+maxHeap.insert(10);
+maxHeap.insert(30);
+maxHeap.insert(5);
+maxHeap.insert(50);
+maxHeap.insert(4);
+
+console.log("Max element:", maxHeap.extractMax()); // Output: 50
+console.log("Peek:", maxHeap.peek()); // Output: 30

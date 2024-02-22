@@ -1,0 +1,167 @@
+Problem Description :-
+
+You are given an array A of integers that represent the lengths of ropes.
+You need to connect these ropes into one rope. The cost of joining two ropes equals the sum of their lengths.
+Find and return the minimum cost to connect these ropes into one rope.
+
+Problem Constraints:-
+1 <= length of the array <= 100000
+1 <= A[i] <= 1000
+
+Input Format:-
+The only argument given is the integer array A.
+
+Output Format:-
+Return an integer denoting the minimum cost to connect these ropes into one rope.
+
+Example Input:-
+
+Input 1:
+ A = [1, 2, 3, 4, 5]
+
+Input 2:
+ A = [5, 17, 100, 11]
+
+
+Example Output:-
+Output 1:
+ 33
+Output 2:
+ 182
+
+
+Example Explanation:-
+Explanation 1:
+
+ Given array A = [1, 2, 3, 4, 5].
+ Connect the ropes in the following manner:
+ 1 + 2 = 3
+ 3 + 3 = 6
+ 4 + 5 = 9
+ 6 + 9 = 15
+
+ So, total cost  to connect the ropes into one is 3 + 6 + 9 + 15 = 33.
+Explanation 2:
+
+ Given array A = [5, 17, 100, 11].
+ Connect the ropes in the following manner:
+ 5 + 11 = 16
+ 16 + 17 = 33
+ 33 + 100 = 133
+
+ So, total cost  to connect the ropes into one is 16 + 33 + 133 = 182.
+
+
+ ==============================================================================================================================================================================================================================
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMin() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const min = this.heap[0];
+        const lastElement = this.heap.pop();
+
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return min;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.heap[currentIndex] < this.heap[parentIndex]) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestChildIndex = currentIndex;
+
+            if (
+                leftChildIndex < this.heap.length &&
+                this.heap[leftChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = leftChildIndex;
+            }
+
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = rightChildIndex;
+            }
+
+            if (smallestChildIndex !== currentIndex) {
+                this.swap(currentIndex, smallestChildIndex);
+                currentIndex = smallestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+let A = [1, 2, 3, 4, 5];//3
+let A1 = [5, 17, 100, 11]//182
+let ans = solve1(A1);
+console.log(ans);
+
+function solve1(A) {
+    let pq = new MinHeap();
+    let cost = 0;
+    // Insert all elements into the priority queue
+    for (let i = 0; i < A.length; i++) {
+        pq.insert(A[i]);
+    }
+    // Keep on removing elements from the queue until there is one element in the queue
+    while (pq.heap.length !== 1) {
+        // Take the two ropes with the smallest length
+        let l1 = pq.extractMin();
+        let l2 = pq.extractMin();
+        // Cost of combining these two ropes is l1 + l2.
+        cost = cost + (l1 + l2);
+        // Add the newly formed rope of length l1 + l2 to the queue.
+        pq.insert(l1 + l2);
+    }
+    return cost;
+}
+/////////////////////////////////////////////////////////////////////////////
+
+

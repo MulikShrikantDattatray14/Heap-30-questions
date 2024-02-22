@@ -1,0 +1,275 @@
+You are given an array A containing N numbers. This array is called special if it satisfies one of the following properties:-
+
+There exists an element A[i] in the array such that A[i] is equal to the median of elements [A[0], A[1], ...., A[i-1]]
+There exists an element A[i] in the array such that A[i] is equal to the median of elements [A[i+1], A[i+2], ...., A[N-1]]
+The Median is the middle element in the sorted list of elements. If the number of elements is even then the median will be (sum of both middle elements) / 2.
+
+Return 1 if the array is special else return 0.
+
+NOTE:
+
+Do not neglect decimal point while calculating the median
+For A[0] consider only the median of elements [A[1], A[2], ..., A[N-1]] (as there are no elements to the left of it)
+For A[N-1] consider only the median of elements [A[0], A[1], ...., A[N-2]]
+
+
+Problem Constraints
+1 <= N <= 1000000.
+A[i] is in the range of a signed 32-bit integer.
+
+
+Input Format
+The first and only argument is an integer array A.
+
+
+Output Format
+Return 1 if the given array is special else return 0.
+
+
+Example Input
+Input 1:
+ A = [4, 6, 8, 4]
+Input 2:
+ A = [2, 7, 3, 1]
+
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+Example Explanation
+Explantion 1:
+ Here, 6 is equal to the median of [8, 4].
+Explanation 2:
+ No element satisfies any condition.
+
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMin() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const min = this.heap[0];
+        const lastElement = this.heap.pop();
+
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return min;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.heap[currentIndex] < this.heap[parentIndex]) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestChildIndex = currentIndex;
+
+            if (
+                leftChildIndex < this.heap.length &&
+                this.heap[leftChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = leftChildIndex;
+            }
+
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = rightChildIndex;
+            }
+
+            if (smallestChildIndex !== currentIndex) {
+                this.swap(currentIndex, smallestChildIndex);
+                currentIndex = smallestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+
+class MaxHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMax() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const max = this.heap[0];
+        const lastElement = this.heap.pop();
+
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return max;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.heap[currentIndex] > this.heap[parentIndex]) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let largestChildIndex = currentIndex;
+
+            if (
+                leftChildIndex < this.heap.length &&
+                this.heap[leftChildIndex] > this.heap[largestChildIndex]
+            ) {
+                largestChildIndex = leftChildIndex;
+            }
+
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex] > this.heap[largestChildIndex]
+            ) {
+                largestChildIndex = rightChildIndex;
+            }
+
+            if (largestChildIndex !== currentIndex) {
+                this.swap(currentIndex, largestChildIndex);
+                currentIndex = largestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+function solve(A) {
+    let temp = [...A].reverse();
+    // A- original array
+    //temp- reversed array
+    if (checkMedian(A) || checkMedian(temp)) {
+        return 1;
+    }
+    return 0;
+}
+function checkMedian(A) {
+    const minHeap = new MinHeap();
+    const maxHeap = new MaxHeap();
+
+    for (let i = 0; i < A.length - 1; i++) {
+        if (maxHeap.isEmpty() || A[i] <= maxHeap.peek()) {
+            maxHeap.insert(A[i]);
+        } else {
+            minHeap.insert(A[i]);
+        }
+        // Balance the heaps
+        if (maxHeap.heap.length > minHeap.heap.length + 1) {
+            minHeap.insert(maxHeap.extractMax());
+        } else if (minHeap.heap.length > maxHeap.heap.length) {
+            maxHeap.insert(minHeap.extractMin());
+        }
+        // Calculate median
+        if (maxHeap.heap.length === minHeap.heap.length) {
+            const ans = (maxHeap.peek() + minHeap.peek()) / 2.0;
+            // upto ith element we got the median , so compare it with the next position.
+            if (ans === A[i + 1]) {
+                return true;
+            }
+        } else {
+            const x = maxHeap.peek();
+            // // upto ith element we got the median , so compare it with the next position.
+            if (x === A[i + 1]) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+A1 = [4, 6, 8, 4]//1
+
+A2 = [2, 7, 3, 1]//0
+
+let ans1 = solve(A1);
+console.log(ans1);
+
+
+let ans2 = solve(A2);
+console.log(ans2);

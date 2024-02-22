@@ -1,0 +1,194 @@
+Given an array of integers A and an integer B. You must modify the array exactly B number of times. In a single modification, we can replace any one array element A[i] by -A[i].
+
+You need to perform these modifications in such a way that after exactly B modifications, sum of the array must be maximum.
+
+NOTE: You can perform the modification on the same element multiple times.
+
+Problem Constraints :-
+1 <= length of the array <= 5*105
+1 <= B <= 5 * 106
+-100 <= A[i] <= 100
+
+Input Format :-
+The first argument given is an integer array A.
+The second argument given is an integer B.
+
+Output Format:-
+Return an integer denoting the maximum array sum after B modifications.
+
+Example Input  :-
+
+Input 1:
+ A = [24, -68, -29, -9, 84]
+ B = 4
+
+Input 2:
+ A = [57, 3, -14, -87, 42, 38, 31, -7, -28, -61]
+ B = 10
+
+
+Example Output
+Output 1:
+
+ 196
+Output 2:
+
+ 362
+
+
+Example Explanation
+Explanation 1:
+
+ 
+Operation 1: Make -29 to 29,
+Operation 2: Make -9 to 9,
+Operation 3: Make 9 to -9,
+Operation 4: Make -68 to 68.
+Thus, the final array after 4 modifications = [24, 68, 29, -9, 84]
+Explanation 2:
+
+ Final array after B modifications = [57, -3, 14, 87, 42, 38, 31, 7, 28, 61]
+
+ ///////////////////////////////////////////////////////////////////////////////////
+
+
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    insert(element) {
+        this.heap.push(element);
+        this.heapifyUp();
+    }
+
+    extractMin() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const min = this.heap[0];
+        const lastElement = this.heap.pop();
+
+        if (this.heap.length > 0) {
+            this.heap[0] = lastElement;
+            this.heapifyDown();
+        }
+
+        return min;
+    }
+
+    peek() {
+        return this.isEmpty() ? null : this.heap[0];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    heapifyUp() {
+        let currentIndex = this.heap.length - 1;
+
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.heap[currentIndex] < this.heap[parentIndex]) {
+                this.swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    heapifyDown() {
+        let currentIndex = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestChildIndex = currentIndex;
+
+            if (
+                leftChildIndex < this.heap.length &&
+                this.heap[leftChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = leftChildIndex;
+            }
+
+            if (
+                rightChildIndex < this.heap.length &&
+                this.heap[rightChildIndex] < this.heap[smallestChildIndex]
+            ) {
+                smallestChildIndex = rightChildIndex;
+            }
+
+            if (smallestChildIndex !== currentIndex) {
+                this.swap(currentIndex, smallestChildIndex);
+                currentIndex = smallestChildIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    swap(i, j) {
+        const temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    }
+}
+//Question :-modify the array exactly B number of times. In a single modification, we can replace any one array element A[i] by -A[i].You need to perform these modifications in such a way that after exactly B modifications, sum of the array must be maximum.
+
+//logic :
+//1. choose the minimum negative number at any moment and modify it .
+//2. if all the numbers are positive and operations left are even, nothing needs to be changed .
+//3.if all the numbers left are positive and operations left are odd,choose the minimum element x and make it -x and break.
+
+function solve(A, B) {
+    let pq = new MinHeap();
+    // insert all elements into the queue
+    for (let i = 0; i < A.length; i++) {
+        pq.insert(A[i]);
+    }
+
+    // perform B modifications :-
+    while (B > 0) {
+        // pop minimum element from the queue
+        let x = pq.extractMin();
+        // if minimum element is 0, we will use all remaining opeations on this and the result will be same
+        if (x == 0) {
+            B = 0;
+        }
+        // if minimum element is negative(x), modify the element to -x , so it comes positive and push -x to queue.
+        else if (x < 0) {
+            pq.insert(-x); //// add "-" sign in front ,so that it becomes positive.
+        } else {
+            // x is positive
+            //if remaining operations are even, then in one operation we convert x to -x and in another -x to x. So, no change
+            //if operations are odd, we will change the number to -x. Set B = 0.
+            if (B % 2 == 0) {
+                pq.insert(x);
+            } else {
+                pq.insert(-x);
+            }
+
+            B = 0;
+            break;
+        }
+
+        B--;
+    }
+
+    let ans = 0;
+    //console.log(pq)// -3,  7, 31, 57, 14,38, 42, 61, 87, 28
+    //add all the elements in the queue to the answer
+    while (!pq.isEmpty()) {
+        ans += pq.extractMin();
+    }
+
+    return ans;
+}
+A = [57, 3, -14, -87, 42, 38, 31, -7, -28, -61];
+B = 10;
+let ans = solve(A, B);
+console.log(ans);

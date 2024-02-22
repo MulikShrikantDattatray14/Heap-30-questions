@@ -1,0 +1,42 @@
+// the below function , takes an array and convert into heap.
+// note : 
+//heapify - creating heap in time complexity of order of N , and not in NlogN. 
+//there are n/2 nodes at the last  level and we do not preform any operation on this n/2 nodes, as they are the leaf nodes and leaf nodes start from the (n/2+1)th node till nth node.
+//As leaf nodes are themselves heap , so lets start the operation from 2nd last level and form the (n/2)th node. 
+
+function maxHeapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  const leftChild = 2 * i + 1; // Left child index
+  const rightChild = 2 * i + 2; // Right child index
+
+  // If left child is larger than root
+  if (leftChild < n && arr[leftChild] > arr[largest]) {
+    largest = leftChild;
+  }
+
+  // If right child is larger than current largest
+  if (rightChild < n && arr[rightChild] > arr[largest]) {
+    largest = rightChild;
+  }
+
+  // If largest is not the root
+  if (largest !== i) {
+    // Swap the root with the largest element
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected subtree
+    maxHeapify(arr, n, largest);
+  }
+}
+
+// Example usage
+const array = [-4, -10, 3, -50, 1];
+const arraySize = array.length;
+
+// Build a max heap - O(n) time complexity
+//// as leaf nodes are themselves heap , so lets start the operation from 2nd last level and from the (n/2)th node. 
+for (let i = Math.floor(arraySize / 2) - 1; i >= 0; i--) {
+  maxHeapify(array, arraySize, i);
+}
+
+console.log("Max Heap:", array);

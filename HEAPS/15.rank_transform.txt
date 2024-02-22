@@ -1,0 +1,29 @@
+//https://leetcode.com/problems/rank-transform-of-an-array/
+
+
+// refer : https://www.youtube.com/watch?v=c15bYB5QFO4&t=334s
+// /Rank Transform of an Array
+// Input: arr = [40,10,20,30]
+// Output: [4,1,2,3]
+
+
+
+
+
+let arr = [40, 10, 20, 20, 30];
+let output = [];
+let ordered = [...arr].sort((a, b) => a - b);
+let map = new Map();
+let rank = 1;
+
+for (let i = 0; i < ordered.length; i++) {
+    if (!map.has(ordered[i])) {
+        // if appears for first time.
+        map.set(ordered[i], rank++);
+    }
+}
+
+for (let i = 0; i < arr.length; i++) {
+    output.push(map.get(arr[i]));
+}
+console.log(output)

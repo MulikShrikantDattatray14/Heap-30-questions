@@ -1,0 +1,100 @@
+class MinHeap {
+  constructor() {
+    this.heap = [];
+  }
+
+  insert(element) {
+    // here we are going from bottom to top
+    this.heap.push(element);
+    this.heapifyUp();
+  }
+
+  extractMin() {
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const min = this.heap[0];
+    const lastElement = this.heap.pop();
+
+    if (this.heap.length > 0) {
+      this.heap[0] = lastElement;
+      this.heapifyDown();
+    }
+
+    return min;
+  }
+
+  peek() {
+    return this.isEmpty() ? null : this.heap[0];
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  heapifyUp() {
+    //here we are going from bottom to top
+    let currentIndex = this.heap.length - 1; // bcz its a zero based index
+
+    while (currentIndex > 0) {
+      // till we reach the top
+      const parentIndex = Math.floor((currentIndex - 1) / 2);
+      if (this.heap[currentIndex] < this.heap[parentIndex]) {
+        this.swap(currentIndex, parentIndex);
+        currentIndex = parentIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  heapifyDown() {
+    // here we are going from top to bottom
+    let currentIndex = 0;
+
+    while (true) {
+      const leftChildIndex = 2 * currentIndex + 1;
+      const rightChildIndex = 2 * currentIndex + 2;
+      let smallestChildIndex = currentIndex;
+
+      if (
+        leftChildIndex < this.heap.length &&
+        this.heap[leftChildIndex] < this.heap[smallestChildIndex]
+      ) {
+        smallestChildIndex = leftChildIndex;
+      }
+
+      if (
+        rightChildIndex < this.heap.length &&
+        this.heap[rightChildIndex] < this.heap[smallestChildIndex]
+      ) {
+        smallestChildIndex = rightChildIndex;
+      }
+
+      if (smallestChildIndex !== currentIndex) {
+        this.swap(currentIndex, smallestChildIndex);
+        currentIndex = smallestChildIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  swap(i, j) {
+    const temp = this.heap[i];
+    this.heap[i] = this.heap[j];
+    this.heap[j] = temp;
+  }
+}
+
+// Example usage:
+const minHeap = new MinHeap();
+minHeap.insert(4);
+minHeap.insert(2);
+minHeap.insert(8);
+minHeap.insert(1);
+
+console.log("Min element:", minHeap.extractMin()); // Output: 1
+console.log("Peek:", minHeap.peek()); // Output: 2
+

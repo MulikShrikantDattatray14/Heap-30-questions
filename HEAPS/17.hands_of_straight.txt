@@ -1,0 +1,75 @@
+Leetcode :846/1296:- Divide Array in Sets of K Consecutive Numbers :-
+
+Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size groupSize, and consists of groupSize consecutive cards.
+
+Given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize, return true if she can rearrange the cards, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: hand = [1,2,3,6,2,3,4,7,8], groupSize = 3
+Output: true
+Explanation: Alice's hand can be rearranged as [1,2,3],[2,3,4],[6,7,8]
+Example 2:
+
+Input: hand = [1,2,3,4,5], groupSize = 4
+Output: false
+Explanation: Alice's hand can not be rearranged into groups of 4.
+
+ 
+
+Constraints:-
+
+1 <= hand.length <= 10^4
+0 <= hand[i] <= 10^9
+1 <= groupSize <= hand.length
+ 
+ =========================================================================================================
+
+Note: This question is the same as 1296: Divide Array in Sets of K Consecutive Numbers https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
+
+
+================================================================================================================================================================================================================================
+
+//https://www.youtube.com/watch?v=q97iSVcJAQk
+
+function isHandValid(hand, w) {
+    if (hand.length % w !== 0) return false;
+    const pq = [];
+    for (let i = 0; i < hand.length; i++) {
+        pq.push(hand[i]);
+    }
+    pq.sort((a, b) => a - b);
+
+    while (pq.length > 0) {
+        //take out  first
+        const smallest = pq.shift();
+        // and now search and check  for the remaining w-1 elements
+        for (let i = 1; i < w; i++) {
+            const next = smallest + i;
+            const index = pq.indexOf(next);
+            if (index !== -1) {
+                pq.splice(index, 1);
+
+            } else {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+//The splice() method adds and/or removes array elements.
+//The splice() method overwrites the original array.
+//array.splice(index, howmany, item1, ....., itemX)
+//1.index	-(Required)-The index (position) to add or remove items.A negative value counts from the end of the array.
+//2.howmany-(Optional)-Number of items to be removed.
+//3.item1, ..., itemX-(Optional)-New elements(s) to be added.
+
+// Example usage:
+const hand = [1, 2, 3, 6, 2, 3, 4, 7, 8];
+const w = 3;
+const result = isHandValid(hand, w);
+console.log(result); // Output: true or false
+
